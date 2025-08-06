@@ -1,0 +1,26 @@
+{
+  "name": "ai-studio-app",
+  "version": "1.0.0",
+  "description": "Full-stack AI Studio with 3D UI, Image Generation, and Chatbot",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "npm run start:frontend",
+    "start:frontend": "cd frontend && npm start",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && pip install -r requirements.txt"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

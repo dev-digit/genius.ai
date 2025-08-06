@@ -1,0 +1,61 @@
+services:
+  - type: web
+    name: ai-studio-backend
+    env: python
+    region: oregon
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+      - key: MONGODB_URL
+        fromService:
+          type: pserv
+          name: ai-studio-mongodb
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: STABILITY_API_KEY
+        sync: false
+      - key: HUGGINGFACE_API_TOKEN
+        sync: false
+      - key: MAX_IMAGE_SIZE
+        value: 1024
+      - key: DEFAULT_STEPS
+        value: 20
+      - key: DEFAULT_GUIDANCE_SCALE
+        value: 7.5
+      - key: HOST
+        value: 0.0.0.0
+      - key: DEBUG
+        value: false
+      - key: FRONTEND_URL
+        value: https://ai-studio-frontend.vercel.app
+      - key: MAX_FILE_SIZE
+        value: 10485760
+    healthCheckPath: /health
+    
+  - type: pserv
+    name: ai-studio-mongodb
+    env: docker
+    region: oregon
+    plan: starter
+    dockerfilePath: ./Dockerfile.mongo
+    disk:
+      name: mongodb-data
+      mountPath: /data/db
+      sizeGB: 1
+
+databases:
+  - name: ai-studio-db
+    databaseName: ai_studio
+    user: ai_studio_user
+    region: oregon
+    plan: starter
